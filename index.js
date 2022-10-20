@@ -22,6 +22,7 @@ async function run(){
     await client.connect();
     const serviceCollection=client.db("doctors_portal").collection("services");
     const bookingCollection=client.db("doctors_portal").collection("bookings");
+    const usersCollection=client.db("doctors_portal").collection("users");
 
     //get
     app.get('/service', async(req,res) =>{
@@ -30,6 +31,32 @@ async function run(){
       const services = await cursor.toArray();
       res.send(services);
     })
+
+
+    //user related api
+    app.put('/user/:email',async(req,res)=>{
+       const email = req.params.email;
+       const user = req.body;
+       const filter = {email:email};
+       const options = {upsert:true};
+       const updateDoc = {
+          $set:user,
+       };
+       const result = await usersCollection.updateOne(filter,updateDoc,options);
+
+       res.send(result);
+    })
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Api nameing Convention
      * app.get('/booking')  //get all booking in this collection.
